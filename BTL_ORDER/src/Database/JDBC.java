@@ -18,7 +18,6 @@ public class JDBC {
 			String userName = "sa";
 			String passWord = "Toiladung123";
 			connection = DriverManager.getConnection(connectionURL, userName, passWord);
-			System.out.println("thanh conng");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

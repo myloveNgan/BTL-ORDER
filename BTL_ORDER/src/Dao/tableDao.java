@@ -10,90 +10,32 @@ import model.tablecode;
 
 public class tableDao {
 
+	private static tableDao instance;
 	public static tableDao getInstance() {
 		return new tableDao();
 	}
-
-	public int addTable(tablecode tC) {
-		int table = 0;
-		try {
-			Connection connection = JDBC.getConnection();
-
-			String sql = "insert into dinnerTable(numberTable,note,statusTable) " + "values(?,?,?)";
-
-			PreparedStatement pS = connection.prepareStatement(sql);
-
-			pS.setInt(1, tC.getnumberTable());
-			pS.setString(2, tC.getNote());
-			pS.setString(3, "Còn trống");
-
-			table = pS.executeUpdate();
-			JDBC.closeConection(connection);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return table;
+	
+	public static void setInsrance(tableDao instance) {
+		tableDao.instance = instance;
 	}
-
-	public int deleteTable(tablecode tc) {
-		int ketqua = 0;
-		try {
-			Connection connection = JDBC.getConnection();
-
-			String sql = "delete  from dinnerTable " + "where numberTable = ?";
-			PreparedStatement pS = connection.prepareStatement(sql);
-			pS.setInt(1, tc.getnumberTable());
-
-			ketqua = pS.executeUpdate();
-			JDBC.closeConection(connection);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ketqua;
-	}
-    
-	public int update(tablecode tc , tablecode id) {
-		int ketqua = 0 ;
-		try {
-			Connection connection = JDBC.getConnection();
-			
-			String sql = " update dinnerTable "+
-			             " set numberTable = ? , note =  ?, statusTable = ? "+
-					     " where numberTable = ?";
-			
-			PreparedStatement pS = connection.prepareStatement(sql);
-			
-			pS.setInt(1, tc.getnumberTable());
-			pS.setString(2, tc.getNote());
-			pS.setString(3, tc.getStatus());
-			pS.setInt(4,id.getnumberTable());
-			
-			ketqua = pS.executeUpdate();
-			JDBC.closeConection(connection);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ketqua;
-	}
+	
+	public tableDao() {
+	}	
+	
 	public ArrayList<tablecode> listTable() {
 		ArrayList<tablecode> listTable = new ArrayList<tablecode>();
 		try {
 			Connection connection = JDBC.getConnection(); // để kết nối dữ
 
-			String sql = "select * from dinnerTable"; // câu lệnh truy vấn
+			String sql = "select * from tables"; // câu lệnh truy vấn
 
 			PreparedStatement pS = connection.prepareStatement(sql); //
 
 			ResultSet rs = pS.executeQuery(); // lấy dữ liệu trong ps
 
 			while (rs.next()) {
-				int numberTable = rs.getInt("numberTable");
-				String note = rs.getNString("note");
-				String status = rs.getNString("statusTable");
-
-				tablecode tc = new tablecode(numberTable, status, note);
-
-				listTable.add(tc);
+				tablecode table = new tablecode(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4) == 0 ? "Còn trống" : "Đã đặt" );
+				listTable.add(table);
 			}
 			JDBC.closeConection(connection);
 		} catch (Exception e) {

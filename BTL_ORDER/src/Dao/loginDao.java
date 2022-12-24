@@ -4,97 +4,132 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import Database.JDBC;
 import model.login;
 
-public class loginDao implements daoInterface<login> {
-	public static loginDao getInstance() {
-		return new loginDao();
-	}
+public class loginDao {
 
-	@Override
-	public int addRegiter(login t) {
-		int ketqua = 0;
-		try {
-			Connection connection = JDBC.getConnection();
-			String sql = "insert into login (useName , passWd , hoVaTen)" + " values(?,?,?)";
-			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setString(1, t.getNameuser());
-			ps.setString(2, t.getPass());
-			ps.setNString(3, t.getName());
-			ketqua = ps.executeUpdate();
+	 private static loginDao instance;
+	    login account = new login();
 
-			JDBC.closeConection(connection);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ketqua;
-	}
+	    public loginDao() {
+	    }
 
-	@Override
-	public int update(login t) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	    public static loginDao getInstance() {
+	        if (instance == null) {
+	            instance = new loginDao();
+	        }
+	        return instance;
+	    }
 
-	@Override
-	public int delete(login t) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	    public static void setInstance(loginDao instance) {
+	    	loginDao.instance = instance;
+	    }
 
-	@Override
-	public ArrayList<login> selectALL() {
-		ArrayList<login> listLogin = new ArrayList<login>();
-		try {
-			Connection connection = JDBC.getConnection();
-			String sql = "select * from login";
-			PreparedStatement ps = connection.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				String useName = rs.getString("useName");
-				String passWd = rs.getString("passWd");
-				String hoVaTen = rs.getNString("hoVaTen");
-				login lg = new login(useName, passWd, hoVaTen);
-				listLogin.add(lg);
-			}
-			JDBC.closeConection(connection);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return listLogin;
-	}
+	    public Boolean Login(String username, String password) {
+	        Connection con = JDBC.getConnection();
+	        try {
+	            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM account WHERE usename = ? AND password = ?");
+	            pstmt.setString(1, username);
+	            pstmt.setString(2, password);
+	            ResultSet rs = pstmt.executeQuery();
+	            if (rs.next()) {
+	                account.setId(rs.getInt(1));
+	                account.setNameuser(rs.getString(2));
+	                account.setPass(rs.getString(3));
+	                account.setName(rs.getString(4));
+	                return true;
+	            }
+	        } catch (Exception e) {
+	           e.printStackTrace();
+	        }
+	        return false;
+	    }
 
-	@Override
-	public String selectById(login t) {
-		String s = null;
-		try {
-			Connection connection = JDBC.getConnection();
-			
-			String sql = "select hoVaTen "+
-			            "from login " +
-					    "where useName = ? and passWd = ?";
-			
-			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setString(1,t.getNameuser());
-			ps.setString(2, t.getPass());
-			
-			
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
-				s = rs.getNString("hoVaTen");
-			}
-			JDBC.closeConection(connection);
-		} catch (Exception e) {
-			e.printStackTrace();		
-			}
-		return s ;
-	}
+	    public login GetAccount() {
+	        return account;
+	    }
 
-	@Override
-	public ArrayList<login> selectByCondition(String condition) {
-		return null;
-	}
+	    public List<login> listAccount() {
+	        List<login> list = new ArrayList<login>();
+	        Connection con = JDBC.getConnection();
+	        try {
+	            PreparedStatement pstmt = con.prepareStatement("SELECT ID, usename, password, name FROM account");
+	            ResultSet rs = pstmt.executeQuery();
+	            while (rs.next()) {
+	            	login account = new login(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
+	                list.add(account);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return list;
+	    }
 
+	    public Boolean Add(String name, String username, String pass) {
+	        Connection con = JDBC.getConnection();
+	        try {
+	            PreparedStatement pstmt = con.prepareStatement("INSERT INTO account(usename, password, name) VALUES (?,?,?)");
+	            pstmt.setString(1, username);
+	            pstmt.setString(2, pass);
+	            pstmt.setString(3, name);
+	            int i = pstmt.executeUpdate();
+	            if (i > 0) {
+	                return true;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return false;
+	    }
+
+	    public Boolean Update(int id, String name, String pass) {
+	        Connection con = JDBC.getConnection();
+	        try {
+	            PreparedStatement pstmt = con.prepareStatement("UPDATE account SET password=?,name=? WHERE ID=?");
+	            pstmt.setString(1, pass);
+	            pstmt.setString(2, name);
+	            pstmt.setInt(3, id);
+	            int i = pstmt.executeUpdate();
+	            if (i > 0) {
+	                return true;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return false;
+	    }
+
+	    public Boolean Delete(int id) {
+	    	Connection con = JDBC.getConnection();
+	        try {
+	            PreparedStatement pstmt = con.prepareStatement("Delete from account where ID=?");
+	            pstmt.setInt(1, id);
+	            int i = pstmt.executeUpdate();
+	            if (i > 0) {
+	                return true;
+	            }
+	        } catch (Exception e) {
+	           e.printStackTrace();
+	        }
+	        return false;
+	    }
+
+	    public Boolean DoiMatKhau(int id, String pass) {
+	    	Connection con = JDBC.getConnection();
+	        try {
+	            PreparedStatement pstmt = con.prepareStatement("UPDATE account SET password=? WHERE ID=?");
+	            pstmt.setString(1, pass);
+	            pstmt.setInt(2, id);
+	            int i = pstmt.executeUpdate();
+	            if (i > 0) {
+	                return true;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return false;
+	    }
 }

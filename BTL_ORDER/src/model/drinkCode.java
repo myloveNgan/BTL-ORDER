@@ -1,74 +1,75 @@
 package model;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
+
 
 public class drinkCode {
-              private String nameDrink;
-              private float moneyDrink;
-              private Date saleDate ;
-              private float sale;
+	          private int id;
+              private String name;
+              private float price;
+              private Date startDate ;
+              private Date endDate ;
               
-              public drinkCode() {
-  				
-  			}
-			public drinkCode(String nameDrink, float moneyDrink, Date saleDate, float sale) {				
-				this.nameDrink = nameDrink;
-				this.moneyDrink = moneyDrink;
-				this.saleDate = saleDate;
-				this.sale = sale;
+			public drinkCode() {
+				
 			}
-			 public drinkCode(String nameDrink) {
-				 this.nameDrink = nameDrink;
-	  			}
-			public String getNameDrink() {
-				return nameDrink;
+
+			public drinkCode(int id, String name) {
+				this.id = id;
+				this.name = name;
 			}
-			public void setNameDrink(String nameDrink) {
-				this.nameDrink = nameDrink;
+
+			public drinkCode(int id, String name, float price, Date startDate, Date endDate) {				
+				this.id = id;
+				this.name = name;
+				this.price = price;
+				this.startDate = startDate;
+				this.endDate = endDate;
 			}
-			public float getMoneyDrink() {
-				return moneyDrink;
+
+			public int getId() {
+				return id;
 			}
-			public void setMoneyDrink(float moneyDrink) {
-				this.moneyDrink = moneyDrink;
+
+			public void setId(int id) {
+				this.id = id;
 			}
-			public Date getSaleDate() {
-				return saleDate;
+
+			public String getName() {
+				return name;
 			}
-			public void setSaleDate(Date saleDate) {
-				this.saleDate = saleDate;
+
+			public void setName(String name) {
+				this.name = name;
 			}
-			public float getSale() {
-				return sale;
+
+			public float getPrice() {
+				return price;
 			}
-			public void setSale(float sale) {
-				this.sale = sale;
+
+			public void setPrice(float price) {
+				this.price = price;
 			}
-			@Override
-			public int hashCode() {
-				return Objects.hash(moneyDrink, nameDrink, sale, saleDate);
+
+			public Date getStartDate() {
+				return startDate;
 			}
-			@Override
-			public boolean equals(Object obj) {
-				if (this == obj)
-					return true;
-				if (obj == null)
-					return false;
-				if (getClass() != obj.getClass())
-					return false;
-				drinkCode other = (drinkCode) obj;
-				return Float.floatToIntBits(moneyDrink) == Float.floatToIntBits(other.moneyDrink)
-						&& Objects.equals(nameDrink, other.nameDrink)
-						&& Float.floatToIntBits(sale) == Float.floatToIntBits(other.sale)
-						&& Objects.equals(saleDate, other.saleDate);
+
+			public void setStartDate(Date startDate) {
+				this.startDate = startDate;
 			}
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+			public Date getEndDate() {
+				return endDate;
+			}
+
+			public void setEndDate(Date endDate) {
+				this.endDate = endDate;
+			}
+
 			@Override
 			public String toString() {
-				return  dateFormat.format(saleDate) ;
+				return name ;
 			}
-              
+         
 }
